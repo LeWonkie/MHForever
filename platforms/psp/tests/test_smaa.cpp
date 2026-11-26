@@ -5,11 +5,12 @@
 #include "check.hpp"
 
 #include <algorithm>
+#include <fstream>
 #include <string>
 
 using namespace mhf::psp::smaa;
 
-int main() {
+int main(int argc, char **argv) {
     // AreaTex: 160x560 RG8 (2 bytes/texel), non-trivial LUT content.
     const LutView area = area_tex();
     MHF_CHECK(area.data != nullptr);
@@ -38,9 +39,19 @@ int main() {
         {Pass::BlendingWeight, "SMAABlendingWeightCalculationVS(", "SMAABlendingWeightCalculationPS("},
         {Pass::NeighborhoodBlending, "SMAANeighborhoodBlendingVS(", "SMAANeighborhoodBlendingPS("},
     };
+    unsigned index = 0;
     for (const auto &p : passes) {
         const std::string vs = vertex_shader(p.pass);
         const std::string ps = fragment_shader(p.pass);
+        if (argc == 2) {
+            const std::string prefix = std::string(argv[1]) + std::to_string(index++);
+            std::ofstream vert(prefix + ".vert"), frag(prefix + ".frag");
+            vert << vs;
+            frag << ps;
+            vert.close();
+            frag.close();
+            MHF_CHECK(vert.good() && frag.good());
+        }
         MHF_CHECK(vs.starts_with("#version 330 core\n"));
         MHF_CHECK(vs.find("#define SMAA_GLSL_3 1") != std::string::npos);
         MHF_CHECK(vs.find("#define SMAA_PRESET_HIGH 1") != std::string::npos);
