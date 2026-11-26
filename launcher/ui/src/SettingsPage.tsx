@@ -515,6 +515,7 @@ export function GameSettingsPage({ state, onChange, onChangeCopy, onRemoveCopy, 
 }) {
   const s = state.settings;
   const game = selectedGame(state) ?? state.games[0];
+  const supportsButtonPrompts = game?.id === 'mhfu' && (game.discId === 'ULUS10391' || game.discId === 'ULES01213');
   const fucomplete = game?.discId === 'ULJM05500-FUC'; // FUComplete's own options apply
   // Freedom Unite's own enhancements (widescreen, HUD scale, the Game section); other games have none yet. Frame
   // interpolation is the frontend's and works for every game.
@@ -553,10 +554,6 @@ export function GameSettingsPage({ state, onChange, onChangeCopy, onRemoveCopy, 
         {enhanced && <div className="srow">
           <div className="slabel"><b>Widescreen</b><span>Fills wide windows and screens with a wider view.</span></div>
           <Toggle on={!!s.widescreen} onToggle={() => onChange({ widescreen: !s.widescreen })} label="Widescreen" />
-        </div>}
-        {enhanced && <div className="srow">
-          <div className="slabel"><b>Xbox button prompts</b><span>Shows A, B, X, Y and Back where the game shows the PSP's buttons, and LB or RB for L or R bound to that bumper alone.</span></div>
-          <Toggle on={s.buttonPrompts === 'xbox'} onToggle={() => onChange({ buttonPrompts: s.buttonPrompts === 'xbox' ? 'original' : 'xbox' })} label="Xbox button prompts" />
         </div>}
         <div className="srow">
           <div className="slabel"><b>Smooth texture filtering</b><span>Applies bilinear filtering to the game's textures.</span></div>
@@ -716,6 +713,10 @@ export function GameSettingsPage({ state, onChange, onChangeCopy, onRemoveCopy, 
       </motion.div>}
       <motion.div className="glass section" {...rise(0.08)}>
         <h3>Controls</h3>
+        {supportsButtonPrompts && <div className="srow">
+          <div className="slabel"><b>Xbox button prompts</b><span>Shows A, B, X, Y and Back where the game shows the PSP's buttons, and LB or RB for L or R bound to that bumper alone.</span></div>
+          <Toggle on={s.buttonPrompts === 'xbox'} onToggle={() => onChange({ buttonPrompts: s.buttonPrompts === 'xbox' ? 'original' : 'xbox' })} label="Xbox button prompts" />
+        </div>}
         <Controls keys={s.keys ?? {}} pad={s.pad ?? {}} keyDefaults={state.keyDefaults ?? {}} padDefaults={state.padDefaults ?? {}} onChange={onChange} />
       </motion.div>
       <motion.div className="glass section" {...rise(0.12)}>

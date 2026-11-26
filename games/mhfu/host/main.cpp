@@ -1261,11 +1261,11 @@ int main(int argc, char **argv) {
             frontend.set_hud(hud_size);
             // Button prompts: the game's two textures that hold them, told by bytes of the player's own copy. The
             // in-game menu changes the style while playing, so they are looked up whatever the style is.
-            if (region::mh_gathering_hud_file || region::mh_prompt_menu_file) {
+            if (region::mh_gathering_hud_file && region::mh_prompt_menu_file) {
                 auto atlases = mhf::mhfu::load_prompt_atlases(options.disc_image, exe, region::mh_gathering_hud_file, region::mh_prompt_menu_file);
                 std::fprintf(stderr, "[mhfu] button prompts: %zu of the game's textures hold them%s\n", atlases.size(),
                              atlases.empty() ? " (the game's own prompts stay)" : "");
-                frontend.set_button_prompts(std::move(atlases), button_prompts);
+                if (atlases.size() == 2u) frontend.set_button_prompts(std::move(atlases), button_prompts);
             }
             frontend.set_widescreen(widescreen);
             const char *shadow_env = std::getenv("MHF_SHADOW"); // MHF_SHADOW=1 turns them on as --projected-shadows does
