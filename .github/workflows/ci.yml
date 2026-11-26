@@ -37,7 +37,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build clang pkg-config libwebkit2gtk-4.1-dev libgtk-3-dev \
+          sudo apt-get install -y ninja-build clang glslang-tools pkg-config libwebkit2gtk-4.1-dev libgtk-3-dev \
             libasound2-dev libgl1-mesa-dev libxkbcommon-dev libwayland-dev \
             libavcodec-dev libavutil-dev glib-networking
       - name: Install pspdev toolchain for our homebrew tests (Linux)
